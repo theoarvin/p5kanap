@@ -1,10 +1,7 @@
 //on recupere le panier dans le local storage
-
 let priceArticle = [];
 
-
-
-  let articlePanier = JSON.parse(localStorage.getItem("canape")); 
+let articlePanier = JSON.parse(localStorage.getItem("canape")); 
 
   //boucle pour recuperer chaque articles
   for(let i = 0; i < articlePanier.length; i++){
@@ -35,77 +32,52 @@ let priceArticle = [];
                               <div class="cart__item__content__settings">
                                 <div class="cart__item__content__settings__quantity">
                                   <p>Qté : </p>
-                                  <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantiteArticle}">
+                                  <input type="number" class="itemQuantity" name="itemQuantity" onclick="mofifierPanier('${idArticle}','${couleurArticle}',this,'${value.price}')" min="1" max="100" value="${quantiteArticle}">
                                 </div>
                                 <div class="cart__item__content__settings__delete">
-                                  <p class="deleteItem">Supprimer</p>
+                                  <p class="deleteItem" onclick="boutonSupprimer('${idArticle}', '${couleurArticle}');">Supprimer</p>
                                 </div>
                               </div>
                               </div>`;                    
-       let dataId = document.querySelectorAll('.cart__item');
-       let qte = document.querySelectorAll('.itemQuantity');      
        let prix = value.price;
-      
+     
+
        // declaration des fonctions
-       boutonSupprimer(dataId,articlePanier); 
-       mofifierPanier(qte,articlePanier,dataId,priceQuantite,prix,quantiteArticle,article);
        calculQuantity(articlePanier);
        calculPrice(articlePanier,prix);
-
-    
       })
       .catch(function(err) {
         console.log(err);
         alert('Une erreur est survenue');
       })
-    }
-     
-  
+    } 
 
-
-
-function boutonSupprimer(dataId,articlePanier) { 
-  let bouton =  document.querySelectorAll('.deleteItem');
-  for(let a = 0; a < bouton.length; a++) {
-  bouton[a].addEventListener('click',(event) => {
-           event.preventDefault();
-           console.log('supp');
-           // on récupere l'id data et la color data
-           let id = dataId[a].dataset.id;
-           let color = dataId[a].dataset.color; 
-           // avec la methode filter je selectionne les éléments a garder et je supprime l'élément ou le btn a été cliqué     
-           articlePanier = articlePanier.filter(p => p.produit !== id  || p.couleurs !== color);
-           // on renvoie le tableau dans le localstorage
-           localStorage.setItem("canape",JSON.stringify(articlePanier)); 
-           //window.alert('element supprimé') 
-           location.reload();  
-           
-       })
- }  
- 
+function boutonSupprimer(idArticle,couleurArticle) { 
+  // avec la methode filter je selectionne les éléments a garder et je supprime l'élément ou le btn a été cliqué     
+  articlePanier = articlePanier.filter(p => p.produit !== idArticle  || p.couleurs !== couleurArticle);
+  // on renvoie le tableau dans le localstorage
+  localStorage.setItem("canape",JSON.stringify(articlePanier)); 
+  // on recharge la fenetre
+  location.reload();  
 }
 
 //fonction pour modifier la quantitée
- function mofifierPanier(qte,articlePanier,dataId,priceQuantite,prix,quantiteArticle,article){
-   articlePanier = JSON.parse(localStorage.getItem("canape"));
-    for(let i = 0; i < qte.length; i++){
-         // on ecoute la value du bouton quantité
-         qte[i].addEventListener('change',()=>{
-              let id = dataId[i].dataset.id;
-              let color = dataId[i].dataset.color;
-              // on change la quantite du local storage par celle du bouton quantité
-              let foundProduct = articlePanier.find(p => p.produit == id || p.couleurs == color);
-              if(foundProduct != undefined ){
-                  console.log(articlePanier);
-                  articlePanier[i].quantites = parseInt(qte[i].value) ;
-                  localStorage.setItem("canape",JSON.stringify(articlePanier));
-                  priceQuantite =  Intl.NumberFormat().format(prix * articlePanier[i].quantites)+ "€";
-                  article.children[1].children[0].children[2].innerHTML = priceQuantite;
-                  //calculQuantity(articlePanier);
-                  //calculPrice(articlePanier,prix);
-              }
-        })
+ function mofifierPanier(idArticle,couleurArticle,el,prix){
+  let articlePanier = JSON.parse(localStorage.getItem("canape")); 
+  let qte = el.value;
+  let priceQuantite = 0;
+  let article = el.closest("article");
+  console.log(article);
+  for(let i = 0 ; i < articlePanier.length ; i++) {
+    if(articlePanier[i].produit == idArticle && articlePanier[i].couleurs == couleurArticle) {
+      articlePanier[i].quantites = parseInt(qte);
+      localStorage.setItem("canape",JSON.stringify(articlePanier));
+      priceQuantite = Intl.NumberFormat().format(prix * articlePanier[i].quantites)+ "€";
+      article.children[1].children[0].children[2].innerHTML = priceQuantite;
+      calculQuantity(articlePanier);
+      calculPrice(articlePanier,prix);
     }
+  }
 }
        
 //**********************************
@@ -135,19 +107,21 @@ function calculPrice(articlePanier,prix){
  
 
 //**************** formulaire ******************
+let contact;
 function  getForm (){
 // on recupère le form
 let form = document.querySelector('.cart__order__form');
 
 
  //Création des expressions régulières
- let emailRegExp = new RegExp ('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
+ let emailRegExp = new RegExp ('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
  let charRegExp = new RegExp ("^[a-zA-Z ,.'-]+$");
  let addressRegExp = new RegExp ("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
 
 // Ecoute de la modification du prénom
 form.firstName.addEventListener('change',function(){
   validFirstName(this) ;
+  
 });
 //ecoute de la modification du nom
 form.lastName.addEventListener('change',function(){
@@ -155,7 +129,7 @@ form.lastName.addEventListener('change',function(){
 });
 //ecoute de la modification de l'adresse
 form.address.addEventListener('change',function(){
-  validAdress(this) ;
+  validAddress(this) ;
 });
 // ecouter la modification de la ville
 form.city.addEventListener('change', function(){
@@ -165,11 +139,7 @@ form.city.addEventListener('change', function(){
 form.email.addEventListener('change', function(){
   validEmail(this);
 });
-// ecouter la validation du formulaire
-form.addEventListener('submit', function(e){
-  e.preventDefault();
-  //if()
-});
+
 
 //******* validation prénom ******
 const validFirstName = function(inputFirstName){
@@ -200,15 +170,15 @@ const validlastName = function(inputLastName){
 };
 
 //******* validation adresse ******
-const validAdress = function(inputAdress){
+const validAddress = function(inputAddress){
   // récuperation de la balise pour l'erreur
-  let adressErrorMsg = inputAdress.nextElementSibling;
+  let addressErrorMsg = inputAddress.nextElementSibling;
   // On test l'expression regulière
-  if(addressRegExp.test(inputAdress.value)){
-      adressErrorMsg.innerHTML ='';
+  if(addressRegExp.test(inputAddress.value)){
+      addressErrorMsg.innerHTML ='';
       return true;
   }else{
-      adressErrorMsg.innerHTML ='Veuillez renseigner votre adresse' ;
+      addressErrorMsg.innerHTML ='Veuillez renseigner votre adresse' ;
       return false;
   }
 };
@@ -239,10 +209,68 @@ const validCity = function(inputCity){
     
    }else{
     emailErrorMsg.innerHTML ='Veuillez renseigner votre email' ;
-    console.log('rip');
+    return false;
    }
    
- }
+ } 
 
+
+// fonction pour envoyer le formulaire
+function validForm(){
+//ecouter la validation du formulaire
+   form.addEventListener('submit', function(e){
+       e.preventDefault();
+       // on vérifie les regEx pour l'envoie de l'objet contact dans le local storage
+          if( validEmail(form.email) && validCity(form.city) && validAddress(form.address) && validlastName(form.lastName) && validFirstName(form.firstName)){
+             console.log('email valide');
+             let orderId;
+              //envoyer les données au backend
+             function sendToServer() {
+                // je récupère les données du formulaire dans un objet contact 
+ contact = {
+  firstName : form.firstName.value,
+  lastName : form.lastName.value,
+  address : form.address.value,
+  city : form.city.value,
+  email : form.email.value
+  }
+  // faire un tableau de produits 
+  let products = [];
+  for(let i = 0; i < articlePanier.length; i++){
+  products.push(articlePanier[i].produit)
+  }
+  
+                 const sendToServer = fetch("http://localhost:3000/api/products/order", {
+                    method: "POST",
+                    body: JSON.stringify({ contact, products }),
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                 })
+                 // Récupération et stockage de la réponse de l'API (orderId)
+                .then((response) => {
+                   return response.json();
+                })
+                .then((server) => {
+                   orderId = server.orderId;
+                      // Si l'orderId a bien été récupéré, on redirige l'utilisateur vers la page de Confirmation
+                      if (orderId != "") {
+                         localStorage.setItem("orderId",JSON.stringify(orderId))
+                         location.href = "confirmation.html?id=" + orderId;
+                         console.log(orderId);
+                         console.log(contact);
+                         console.log(products);
+                      }
+                });
+          
+               
+             }
+             sendToServer();
+           }else{
+              console.log('email invalide');
+           }
+     });
 }
-getForm()
+validForm();
+}
+getForm();
