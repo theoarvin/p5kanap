@@ -54,27 +54,38 @@ fetch(urlApiProduits)
         couleurs: couleur 
     }
     // condition pour valider que l'utilisateur choisisse une couleur avec un chiffre entres 1 - 100 
-  if(couleur && quantite > 0 && quantite <=100){
+    if(couleur && quantite > 0 && quantite <=100){
     // ajoute au panier
     if( document.querySelector('#alertErreurProduct') != null){
       document.querySelector('#alertErreurProduct').remove();
     }
-    
     addCanape(produits);
-    
-  } // sinon message d'erreur
-  else if(couleur == false || quantite <= 0 || quantite > 100 ){
+    alert("votre produit a été ajouté au panier")
+    } // sinon message d'erreur
+    if(couleur == false ){
+      if( document.querySelector('#alertErreurProduct') != null){
+        document.querySelector('#alertErreurProduct').remove();
+      }
       div = document.querySelector('.item__content__addButton');
-      
-          
-           p.innerText = 'veuillez de remplir tous les champs' ;
+           p.innerText = 'veuillez choisir une couleur' ;
            div.append(p);
            p.style.position="absolute";
            p.style.marginTop="80px";
            p.style.color="#000";
            p.style.fontWeight="bold";
            
-  }
+    }else if( quantite <= 0 || quantite > 100 ){
+      if( document.querySelector('#alertErreurProduct') != null){
+        document.querySelector('#alertErreurProduct').remove();
+      }
+      div = document.querySelector('.item__content__addButton');
+           p.innerText = "veuillez choisir un nombre d'article(s) entres 1-100" ;
+           div.append(p);
+           p.style.position="absolute";
+           p.style.marginTop="80px";
+           p.style.color="#000";
+           p.style.fontWeight="bold";
+    }
   
  }
  )
