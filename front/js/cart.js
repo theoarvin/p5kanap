@@ -226,21 +226,21 @@ function validForm(){
              let orderId;
               //envoyer les données au backend
              function sendToServer() {
-                // je récupère les données du formulaire dans un objet contact 
- contact = {
-  firstName : form.firstName.value,
-  lastName : form.lastName.value,
-  address : form.address.value,
-  city : form.city.value,
-  email : form.email.value
-  }
-  // faire un tableau de produits 
-  let products = [];
-  for(let i = 0; i < articlePanier.length; i++){
-  products.push(articlePanier[i].produit)
-  }
+                    // je récupère les données du formulaire dans un objet contact 
+                    contact = {
+                       firstName : form.firstName.value,
+                       lastName : form.lastName.value,
+                       address : form.address.value,
+                       city : form.city.value,
+                       email : form.email.value
+                     }
+                   // faire un tableau de produits 
+                   let products = [];
+                     for(let i = 0; i < articlePanier.length; i++){
+                     products.push(articlePanier[i].produit)
+                     }
   
-                 const sendToServer = fetch("http://localhost:3000/api/products/order", {
+                 const valide = fetch("http://localhost:3000/api/products/order", {
                     method: "POST",
                     body: JSON.stringify({ contact, products }),
                     headers: {
