@@ -255,11 +255,8 @@ function validForm(){
                    orderId = server.orderId;
                       // Si l'orderId a bien été récupéré, on redirige l'utilisateur vers la page de Confirmation
                       if (orderId != "") {
-                         localStorage.setItem("orderId",JSON.stringify(orderId))
                          location.href = "confirmation.html?id=" + orderId;
-                         console.log(orderId);
-                         console.log(contact);
-                         console.log(products);
+                        
                       }
                 });
           
