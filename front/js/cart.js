@@ -2,8 +2,8 @@
 let priceArticle = [];
 
 let articlePanier = JSON.parse(localStorage.getItem("canape")); 
-
-  //boucle pour recuperer chaque articles
+function panier(){
+    //boucle pour recuperer chaque articles
   for(let i = 0; i < articlePanier.length; i++){
     let idArticle = articlePanier[i].produit;
     let couleurArticle = articlePanier[i].couleurs;
@@ -39,18 +39,21 @@ let articlePanier = JSON.parse(localStorage.getItem("canape"));
                                 </div>
                               </div>
                               </div>`;                    
-       let prix = value.price;
+      
      
 
-       // declaration des fonctions
-       calculQuantity(articlePanier);
-       calculPrice(articlePanier,prix);
+     
       })
       .catch(function(err) {
         console.log(err);
         alert('Une erreur est survenue');
       })
     } 
+      // declaration des fonctions
+      calculQuantity(articlePanier);
+      calculPrice(articlePanier);
+}
+panier();
 
 function boutonSupprimer(idArticle,couleurArticle) { 
   // avec la methode filter je selectionne les éléments a garder et je supprime l'élément ou le btn a été cliqué     
@@ -96,13 +99,21 @@ function calculQuantity(articlePanier){
 }
 
 
-function calculPrice(articlePanier,prix){
-  articlePanier = JSON.parse(localStorage.getItem("canape")); 
+async function calculPrice(articlePanier){
   let number = 0;
+
   for(let produit of articlePanier){
-    number += produit.quantites * prix
+    const prix = await getPrix(produit.produit);
+    number += produit.quantites * prix;
   }
+  number = Intl.NumberFormat().format(number);
   document.querySelector('#totalPrice').innerHTML= number;
+}
+
+async function getPrix(idCanape) {
+  const response = await fetch(`http://localhost:3000/api/products/` + idCanape, {});
+  const json = await response.json();
+  return json.price;
 }
  
 
@@ -226,21 +237,21 @@ function validForm(){
              let orderId;
               //envoyer les données au backend
              function sendToServer() {
-                // je récupère les données du formulaire dans un objet contact 
- contact = {
-  firstName : form.firstName.value,
-  lastName : form.lastName.value,
-  address : form.address.value,
-  city : form.city.value,
-  email : form.email.value
-  }
-  // faire un tableau de produits 
-  let products = [];
-  for(let i = 0; i < articlePanier.length; i++){
-  products.push(articlePanier[i].produit)
-  }
+                    // je récupère les données du formulaire dans un objet contact 
+                    contact = {
+                       firstName : form.firstName.value,
+                       lastName : form.lastName.value,
+                       address : form.address.value,
+                       city : form.city.value,
+                       email : form.email.value
+                     }
+                   // faire un tableau de produits 
+                   let products = [];
+                     for(let i = 0; i < articlePanier.length; i++){
+                     products.push(articlePanier[i].produit)
+                     }
   
-                 const sendToServer = fetch("http://localhost:3000/api/products/order", {
+                 const valide = fetch("http://localhost:3000/api/products/order", {
                     method: "POST",
                     body: JSON.stringify({ contact, products }),
                     headers: {
@@ -255,11 +266,8 @@ function validForm(){
                    orderId = server.orderId;
                       // Si l'orderId a bien été récupéré, on redirige l'utilisateur vers la page de Confirmation
                       if (orderId != "") {
-                         localStorage.setItem("orderId",JSON.stringify(orderId))
                          location.href = "confirmation.html?id=" + orderId;
-                         console.log(orderId);
-                         console.log(contact);
-                         console.log(products);
+                        
                       }
                 });
           
