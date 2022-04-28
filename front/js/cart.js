@@ -2,8 +2,8 @@
 let priceArticle = [];
 
 let articlePanier = JSON.parse(localStorage.getItem("canape")); 
-
-  //boucle pour recuperer chaque articles
+function panier(){
+    //boucle pour recuperer chaque articles
   for(let i = 0; i < articlePanier.length; i++){
     let idArticle = articlePanier[i].produit;
     let couleurArticle = articlePanier[i].couleurs;
@@ -51,7 +51,9 @@ let articlePanier = JSON.parse(localStorage.getItem("canape"));
         alert('Une erreur est survenue');
       })
     } 
-
+}
+ 
+panier();
 function boutonSupprimer(idArticle,couleurArticle) { 
   // avec la methode filter je selectionne les éléments a garder et je supprime l'élément ou le btn a été cliqué     
   articlePanier = articlePanier.filter(p => p.produit !== idArticle  || p.couleurs !== couleurArticle);

@@ -7,7 +7,8 @@ let id = params.get('id');
 let urlApiProduits = new URL (id, urlApi)
 
 // lien des canapés sur la page produits 
-fetch(urlApiProduits)
+function afficheProduct(){
+  fetch(urlApiProduits)
   .then(function(res) {
     if (res.ok) {
       return res.json();
@@ -33,6 +34,8 @@ fetch(urlApiProduits)
   .catch(function(err) {
     alert('Une erreur est survenue');
   });
+}
+afficheProduct();
   
   //******************local storage******************** 
   
@@ -53,39 +56,43 @@ fetch(urlApiProduits)
         quantites: quantite,
         couleurs: couleur 
     }
-    // condition pour valider que l'utilisateur choisisse une couleur avec un chiffre entres 1 - 100 
+
+    function valideCondition(){
+      // condition pour valider que l'utilisateur choisisse une couleur avec un chiffre entres 1 - 100 
     if(couleur && quantite > 0 && quantite <=100){
-    // ajoute au panier
-    if( document.querySelector('#alertErreurProduct') != null){
-      document.querySelector('#alertErreurProduct').remove();
-    }
-    addCanape(produits);
-    alert("votre produit a été ajouté au panier")
-    } // sinon message d'erreur
-    if(couleur == false ){
+      // ajoute au panier
       if( document.querySelector('#alertErreurProduct') != null){
         document.querySelector('#alertErreurProduct').remove();
       }
-      div = document.querySelector('.item__content__addButton');
-           p.innerText = 'veuillez choisir une couleur' ;
-           div.append(p);
-           p.style.position="absolute";
-           p.style.marginTop="80px";
-           p.style.color="#000";
-           p.style.fontWeight="bold";
-           
-    }else if( quantite <= 0 || quantite > 100 ){
-      if( document.querySelector('#alertErreurProduct') != null){
-        document.querySelector('#alertErreurProduct').remove();
+      addCanape(produits);
+      alert("votre produit a été ajouté au panier")
+      } // sinon message d'erreur
+      if(couleur == false ){
+        if( document.querySelector('#alertErreurProduct') != null){
+          document.querySelector('#alertErreurProduct').remove();
+        }
+        div = document.querySelector('.item__content__addButton');
+             p.innerText = 'veuillez choisir une couleur' ;
+             div.append(p);
+             p.style.position="absolute";
+             p.style.marginTop="80px";
+             p.style.color="#000";
+             p.style.fontWeight="bold";
+             
+      }else if( quantite <= 0 || quantite > 100 ){
+        if( document.querySelector('#alertErreurProduct') != null){
+          document.querySelector('#alertErreurProduct').remove();
+        }
+        div = document.querySelector('.item__content__addButton');
+             p.innerText = "veuillez choisir un nombre d'article(s) entres 1-100" ;
+             div.append(p);
+             p.style.position="absolute";
+             p.style.marginTop="80px";
+             p.style.color="#000";
+             p.style.fontWeight="bold";
       }
-      div = document.querySelector('.item__content__addButton');
-           p.innerText = "veuillez choisir un nombre d'article(s) entres 1-100" ;
-           div.append(p);
-           p.style.position="absolute";
-           p.style.marginTop="80px";
-           p.style.color="#000";
-           p.style.fontWeight="bold";
     }
+    valideCondition();
   
  }
  )

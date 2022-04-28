@@ -2,7 +2,8 @@
 let urlApi = 'http://localhost:3000/api/products';
 
 // récupération des produits sur la page d'acceuil
-fetch(urlApi)
+function afficheArticles(){
+  fetch(urlApi)
   .then(function(res) {
     if (res.ok) {
       return res.json();
@@ -25,7 +26,8 @@ fetch(urlApi)
  
  })
   
-  
+}
+afficheArticles(); 
  
   
   
