@@ -39,21 +39,22 @@ function panier(){
                                 </div>
                               </div>
                               </div>`;                    
-       let prix = value.price;
+      
      
 
-       // declaration des fonctions
-       calculQuantity(articlePanier);
-       calculPrice(articlePanier,prix);
+     
       })
       .catch(function(err) {
         console.log(err);
         alert('Une erreur est survenue');
       })
     } 
+      // declaration des fonctions
+      calculQuantity(articlePanier);
+      calculPrice(articlePanier);
 }
- 
 panier();
+
 function boutonSupprimer(idArticle,couleurArticle) { 
   // avec la methode filter je selectionne les éléments a garder et je supprime l'élément ou le btn a été cliqué     
   articlePanier = articlePanier.filter(p => p.produit !== idArticle  || p.couleurs !== couleurArticle);
@@ -98,13 +99,21 @@ function calculQuantity(articlePanier){
 }
 
 
-function calculPrice(articlePanier,prix){
-  articlePanier = JSON.parse(localStorage.getItem("canape")); 
+async function calculPrice(articlePanier){
   let number = 0;
+
   for(let produit of articlePanier){
-    number += produit.quantites * prix
+    const prix = await getPrix(produit.produit);
+    number += produit.quantites * prix;
   }
+  number = Intl.NumberFormat().format(number);
   document.querySelector('#totalPrice').innerHTML= number;
+}
+
+async function getPrix(idCanape) {
+  const response = await fetch(`http://localhost:3000/api/products/` + idCanape, {});
+  const json = await response.json();
+  return json.price;
 }
  
 
