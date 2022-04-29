@@ -52,6 +52,7 @@ afficheProduct();
     p.setAttribute('id','alertErreurProduct')
 
     let produits = {
+      
         produit: id,
         quantites: quantite,
         couleurs: couleur 
